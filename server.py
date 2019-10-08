@@ -1,5 +1,5 @@
-import wikiBot
-import pywikiBOT
+import utils.wikiBot as wikiBot
+import utils.pywikiBOT as pywikiBOT
 import json
 from flask import Flask, request, Response
 from fetchPage import fetchURLLib
@@ -81,15 +81,13 @@ def pageHandler():
 def getPageHTML():
     queryReq = request.get_json()
     fetchURL = fetchURLLib()
-    movie = queryReq['pageLink']
-    # outfile = queryReq['outfile']
-    pageFull = wikiBot.pageQuery(movie)
+    actor_name = queryReq['actor_name']
+    actor_name = actor_name + " Filmography"
+    pageFull = wikiBot.pageQuery(actor_name)
     pageUrl = pageFull.url
     print("Got URL", pageUrl)
-    outfile = "pirates_end" + "_.txt"
-    # resultSet = fetchURL.fetchByLink(pageUrl)
+    outfile = str(actor_name) + "_.txt"
     resultSet = fetchURL.fetchPageDetails(pageUrl, outfile)
-    # return Response(json.dumps(resultSet), status=200, mimetype='application/json')
     return "Blah"
 
 

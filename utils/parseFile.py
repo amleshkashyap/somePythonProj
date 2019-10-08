@@ -1,9 +1,5 @@
 import sys
 import re
-import json
-import csv
-# import scrapy_proj.util.tagDelimiters  as tagDelimiters
-# import scrapy_proj.scrapy_proj.util.tagDelimiters as tagDelimiters
 import utils.tagDelimiters as tagDelimiters
 from bs4 import BeautifulSoup
 import html2text
@@ -36,21 +32,24 @@ def getMovieTable(body, tableclass):
                 findHead = 1
                 continue
             low_table = cols.find_all(['th', 'td'])
-            print(low_table)
+            # print(low_table)
             for i in range(len(low_table)):
                 if(i > 1):
                     break
                 element = low_table[i]
                 if(i == 0):
                     headDetails = element('a')
-                    if(headDetails):
-                        this_element = headDetails.get('title')
-                        this_element = this_element.replace("\xe2\x80\x93", "-").replace("x2 x80 x93", "-"). \
-                            replace("\xa0", " ").replace("\\", "")
-                        movieInformation.update({"title": this_element})
-                        this_element = headDetails.get('href')
-                        movieInformation.update({"pageURL": this_element})
-                        continue
+                    for keys in headDetails:
+                        if(keys):
+                            this_element = keys.get('title')
+                            this_element = this_element.replace("\xe2\x80\x93", "-").replace("x2 x80 x93", "-"). \
+                                replace("\xa0", " ").replace("\\", "")
+                            movieInformation.update({"title": this_element})
+                            this_element = keys.get('href')
+                            this_element = "https://en.wikipedia.org" + this_element
+                            movieInformation.update({"pageURL": this_element})
+                            break
+                    continue
                 elif(i == 1):
                     if (element.string != None):
                         this_element = element.string
@@ -58,7 +57,6 @@ def getMovieTable(body, tableclass):
                         movieList.append(movieInformation)
                         break
         break
-    print(movieList)
     return movieList
 
 
@@ -103,11 +101,19 @@ def getMovieInfoTable(body, tableclass):
                             break
                     if (element.string.lower() == "release date"):
                         dates = low_table[i + 1]
-                        this_date = dates.text.split("\\n")[1]
-                        this_date = this_date.replace("\xe2\x80\x93", "-").replace("x2 x80 x93", "-").\
-                            replace("\xa0", " ")
-                        movieInformation.update({"released": this_date})
-                        continue
+                        if(dates.string != None):
+                            this_date = dates.string
+                            movieInformation.update({"released": this_date})
+                            continue
+                        else:
+                            try:
+                                this_date = dates.text.split("\\n")[1]
+                                this_date = this_date.replace("\xe2\x80\x93", "-").replace("x2 x80 x93", "-").\
+                                    replace("\xa0", " ")
+                                movieInformation.update({"released": this_date})
+                                continue
+                            except:
+                                continue
                         # this_element = element.string.replace("\\xe2\\x80\\x93", "-").replace("x2 x80 x93", "-")
                         # print(this_element)
                 else:
@@ -142,8 +148,8 @@ def getTextFromEnglishPage(body):
         tempStr = line.strip(' ')
         if(tempStr == ''):
             continue
-        #elif( (line == '') or (line == ' ') or ("www." in line) or ("http" in line) ):
-        #    continue
+        elif( (line == '') or (line == ' ') or ("www." in line) or ("http" in line) ):
+            continue
         else:
             bodyNew2.append(line)
             '''
@@ -188,10 +194,6 @@ def getTextFromPage(body):
             continue
         elif( (line == '') or (line == ' ') or ("www." in line) or ("http" in line) ):
             continue
-        # translator = Translator(provider='mymemory', from_lang="it", to_lang="en")
-        # lineTrans = myTranslate(str(line), 'auto', 'en')
-        # testString = "Gli altri musei, Il Palazzo Reale, le sale neoclassiche e Antonio Canova, la storia di"
-        # print(myTranslate(testString, 'it', 'en'))
         else:
             # lineTrans = myTranslate(str(line), 'auto', 'en')
             bodyNew2.append(line)
