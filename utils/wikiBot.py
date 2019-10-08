@@ -4,17 +4,14 @@ import sys
 import traceback
 
 def checkPageExistence(query):
-    print(query)
     site = pywikibot.Site()
     page = pywikibot.Page(site, query)
-    print(query)
     if (page.exists()):
         return True
     else:
         return False
 
 def searchQuery(query):
-    print(query)
     pageCheck = checkPageExistence(query)
     if(pageCheck):
         try:
@@ -25,7 +22,6 @@ def searchQuery(query):
             print(exc_value)
             if("Disambiguation" in exc_value):
                 print("Disambiguation Error")
-            exit()
     else:
         return "No Wikipedia Page Exists"
 
@@ -38,7 +34,6 @@ def summaryQuery(query):
             return search
         except:
             print("No wikipedia page")
-            exit()
     else:
         return "No Wikipedia Page Exists"
 
@@ -48,11 +43,12 @@ def pageQuery(query):
     if (pageCheck):
         try:
             search = wikipedia.page(query)
+            print(search.url)
             return search
         except:
             print("No wikipedia page")
-            exit()
     else:
+        print("Nothing Found")
         return "No Wikipedia Page Exists"
 
 

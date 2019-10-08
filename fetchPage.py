@@ -20,7 +20,8 @@ class fetchURLLib:
             if('pageURL' in movies):
                 new_request_link = urllib.request.Request(movies['pageURL'], None, headers)
                 new_request_page = str(urllib.request.urlopen(new_request_link).read())
-                new_request_page_text = parseFile.getMovieInfoTable(new_request_page, 'infobox vevent')
+                new_request_page_dict = parseFile.getMovieInfoTable(new_request_page, 'infobox vevent')
+                movies['details'] = new_request_page_dict
         with open(outfile, 'w', encoding='utf-8') as csvoutfile:
           spamwriter = csv.writer(csvoutfile)
           spamwriter.writerow(["** Original Page ** ", str(request_page)])

@@ -132,8 +132,7 @@ def getMovieInfoTable(body, tableclass):
                             break
         break
     print(movieInformation)
-    bodyNew = [bodyNew2]
-    return bodyNew
+    return movieInformation
 
 
 def getTextFromEnglishPage(body):

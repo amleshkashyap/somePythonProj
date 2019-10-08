@@ -81,14 +81,18 @@ def pageHandler():
 def getPageHTML():
     queryReq = request.get_json()
     fetchURL = fetchURLLib()
-    actor_name = queryReq['actor_name']
-    actor_name = actor_name + " Filmography"
+    actor_arg = queryReq['actor_name']
+    actor_name = actor_arg + " filmography"
+    print(actor_name)
     pageFull = wikiBot.pageQuery(actor_name)
-    pageUrl = pageFull.url
-    print("Got URL", pageUrl)
-    outfile = str(actor_name) + "_.txt"
-    resultSet = fetchURL.fetchPageDetails(pageUrl, outfile)
-    return "Blah"
+    if(type(pageFull) is not str):
+        pageUrl = pageFull.url
+        print("Got URL", pageUrl)
+        outfile = str(actor_name) + "_.txt"
+        resultSet = fetchURL.fetchPageDetails(pageUrl, outfile)
+        return "Success"
+    else:
+        return "Can't Find URL"
 
 
 if __name__ == "__main__":
